@@ -1,0 +1,8 @@
+﻿Group: Payment methods
+FriendlyName: Payture
+SystemName: Payments.Payture
+Version: 1.15
+SupportedVersions: 4.70
+Author: Venom
+DisplayOrder: 1
+FileName: Grand.Plugin.Payments.Payture.dll
