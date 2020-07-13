@@ -184,12 +184,12 @@ namespace Grand.Framework.Security
             if (OperatingSystem.IsWindows())
             {
                 filesToCheck.Add(Path.Combine(rootDir, "App_Data\\InstalledPlugins.txt"));
-                filesToCheck.Add(Path.Combine(rootDir, "App_Data\\Settings.txt"));
+                filesToCheck.Add(Path.Combine(rootDir, $"App_Data\\Settings.{SharedConfig.SharedConfig.EnvironmentName}.txt"));
             }
             else
             {
                 filesToCheck.Add(Path.Combine(rootDir, "App_Data/InstalledPlugins.txt"));
-                filesToCheck.Add(Path.Combine(rootDir, "App_Data/Settings.txt"));
+                filesToCheck.Add(Path.Combine(rootDir, $"App_Data/Settings.{SharedConfig.SharedConfig.EnvironmentName}.txt"));
             }
             return filesToCheck;
         }

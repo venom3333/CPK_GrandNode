@@ -1,4 +1,5 @@
 ﻿using Grand.Core.Infrastructure;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,7 +15,7 @@ namespace Grand.Core.Data
     public partial class DataSettingsManager
     {
         protected const char separator = ':';
-        protected const string filename = "Settings.txt";
+        protected readonly string filename = $"Settings.{SharedConfig.SharedConfig.EnvironmentName}.txt";
 
         protected string RemoveSpecialCharacters(string str)
         {

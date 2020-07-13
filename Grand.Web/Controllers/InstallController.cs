@@ -257,7 +257,7 @@ namespace Grand.Web.Controllers
                     DataSettingsHelper.ResetCache();
                     await _cacheManager.Clear();
 
-                    System.IO.File.Delete(CommonHelper.MapPath("~/App_Data/Settings.txt"));
+                    System.IO.File.Delete(CommonHelper.MapPath($"~/App_Data/Settings.{SharedConfig.SharedConfig.EnvironmentName}.txt"));
 
                     ModelState.AddModelError("", string.Format(locService.GetResource("SetupFailed"), exception.Message + " " + exception.InnerException?.Message));
                 }

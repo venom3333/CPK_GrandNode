@@ -29,4 +29,7 @@
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="StackExchange.Redis" Version="2.1.30" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SharedConfig\SharedConfig.csproj" />
+  </ItemGroup>
 </Project>

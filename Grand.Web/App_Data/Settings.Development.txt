@@ -1,0 +1,2 @@
+DataProvider: mongodb
+DataConnectionString: mongodb://mongo-admin:aeseJ1zZ!@rc1b-zx52cbldn24c64vp.mdb.yandexcloud.net:27018/cpk-dev-mongo-db

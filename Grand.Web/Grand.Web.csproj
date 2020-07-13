@@ -14,6 +14,7 @@
     <ProjectReference Include="..\Grand.Core\Grand.Core.csproj" />
     <ProjectReference Include="..\Grand.Framework\Grand.Framework.csproj" />
     <ProjectReference Include="..\Grand.Services\Grand.Services.csproj" />
+    <ProjectReference Include="..\SharedConfig\SharedConfig.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.4" />
@@ -39,6 +40,7 @@
     <Compile Remove="Plugins\**" />
     <EmbeddedResource Remove="Plugins\**" />
     <None Remove="Plugins\**" />
+    <None Remove="App_Data\Settings.Development.txt" />
     <Content Update="Plugins\**">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
