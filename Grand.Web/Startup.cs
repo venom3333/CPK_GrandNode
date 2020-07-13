@@ -30,6 +30,7 @@ namespace Grand.Web
             Configuration = new ConfigurationBuilder()
                 .SetBasePath(environment.ContentRootPath)
                 .AddJsonFile("App_Data/appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"App_Data/appsettings.{SharedConfig.SharedConfig.EnvironmentName}.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables()
                 .Build();
         }
