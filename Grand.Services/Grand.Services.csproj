@@ -35,6 +35,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Grand.Core\Grand.Core.csproj" />
+    <ProjectReference Include="..\YandexObjectStorageService\YandexObjectStorageService.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -12,6 +12,8 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
+using YandexObjectStorageService;
+
 namespace Grand.Services.Media
 {
     /// <summary>
@@ -21,6 +23,7 @@ namespace Grand.Services.Media
     {
         #region Fields
 
+        private readonly IYandexStorageService yandexStorage;
         private readonly IRepository<Download> _downloadRepository;
         private readonly IMediator _mediator;
 
