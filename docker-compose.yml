@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   grand.web:
-    image: ${DOCKER_REGISTRY-}grandweb
+    image: alrosait/cpk:development
     build:
       context: .
       dockerfile: Grand.Web/Dockerfile

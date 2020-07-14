@@ -1,0 +1,2 @@
+Payments.CashOnDelivery
+Payments.Payture
