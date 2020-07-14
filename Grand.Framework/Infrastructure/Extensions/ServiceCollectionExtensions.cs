@@ -34,6 +34,7 @@ using System.Text.Encodings.Web;
 using System.Text.Unicode;
 using WebMarkupMin.AspNet.Common.UrlMatchers;
 using WebMarkupMin.AspNetCore3;
+using YandexObjectStorageService;
 
 namespace Grand.Framework.Infrastructure.Extensions
 {
@@ -56,6 +57,9 @@ namespace Grand.Framework.Infrastructure.Extensions
             services.ConfigureStartupConfig<HostingConfig>(configuration.GetSection("Hosting"));
             //add api configuration parameters
             services.ConfigureStartupConfig<ApiConfig>(configuration.GetSection("Api"));
+
+            // add Yandex object storage service (s3)
+            services.AddYandexObjectStorage(configuration);
 
             //add accessor to HttpContext
             services.AddHttpContextAccessor();
