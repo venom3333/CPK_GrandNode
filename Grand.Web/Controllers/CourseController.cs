@@ -206,10 +206,7 @@ namespace Grand.Web.Controllers
             };
         }
 
-        public virtual async Task<IActionResult> VideoFile(
-            // [FromServices] IYandexStorageService yandexStorage, // для теста предподписанной ссылки
-            string id
-            )
+        public virtual async Task<IActionResult> VideoFile(string id)
         {
             var customer = _workContext.CurrentCustomer;
 
@@ -227,11 +224,6 @@ namespace Grand.Web.Controllers
             var download = await _downloadService.GetDownloadById(lesson.VideoFile);
             if (download == null)
                 return Content("No download record found with the specified id");
-
-            // Тест работоспособности предподписанной ссылки + редиректа на нее
-            //var presignedUrl = yandexStorage.GetPresignedUrlAsync("ca5e66d8-3ed2-4614-84c9-0601b8195cd2_test_file6.mp4");
-            //if (!string.IsNullOrWhiteSpace(presignedUrl))
-            //    return new RedirectResult(presignedUrl);
 
             if (download.UseDownloadUrl)
                 return new RedirectResult(download.DownloadUrl);

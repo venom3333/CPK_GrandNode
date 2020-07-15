@@ -69,7 +69,7 @@ namespace Grand.Services.Media
             {
                 if (_download.UseExternalStorage)
                 {
-                    var presignedUrl = _yandexStorage.GetPresignedUrlAsync(_download.DownloadUrl, TimeSpan.FromHours(3));
+                    var presignedUrl = _yandexStorage.GetPresignedUrl(_download.DownloadUrl);
                     _download.DownloadUrl = presignedUrl;
                 }
                 return _download;
@@ -103,7 +103,7 @@ namespace Grand.Services.Media
             {
                 if (order.UseExternalStorage)
                 {
-                    var presignedUrl = _yandexStorage.GetPresignedUrlAsync(order.DownloadUrl, TimeSpan.FromHours(3));
+                    var presignedUrl = _yandexStorage.GetPresignedUrl(order.DownloadUrl);
                     order.DownloadUrl = presignedUrl;
                 }
                 return order;

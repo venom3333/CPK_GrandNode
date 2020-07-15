@@ -22,7 +22,7 @@ namespace YandexObjectStorageService
             Service = section.GetSection("Service")?.Value ?? YandexStorageDefaults.Service;
             SubPath = section.GetSection("SupPath")?.Value ?? YandexStorageDefaults.SupPath;
 
-            int.TryParse(section.GetSection("SupPath")?.Value, out int expiration);
+            int.TryParse(section.GetSection("PresignedUrlExpirationInHours")?.Value, out int expiration);
             if (expiration == default) expiration = YandexStorageDefaults.PresignedUrlExpirationInHours;
             PresignedUrlExpirationInHours = expiration;
         }
