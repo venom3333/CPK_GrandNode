@@ -10,6 +10,7 @@
     //other variables
     var randomNumber = CommonHelper.GenerateRandomInteger();
     var clientId = "download" + randomNumber;
+    var clientIdExternal = "downloadExternal" + randomNumber;
     var download = await downloadService.GetDownloadById(Model);
 
     var disableUrl = Convert.ToBoolean(ViewData["Grand.DownloadEditor.DisableUrl"] ?? false);
@@ -18,6 +19,7 @@
 <script type="text/javascript">
     $(document).ready(function() {
         $('#cbUseDownloadURL@(randomNumber)').click(toggleDownloadRecordType@(randomNumber));
+        $('#cbUseExternalStorage@(randomNumber)').click(toggleDownloadRecordType@(randomNumber));
 
         $('#saveDownloadUrl@(randomNumber)').click(function() {
             var downloadUrl = $("#downloadurl@(randomNumber)").val();
@@ -50,11 +52,21 @@
 
     function toggleDownloadRecordType@(randomNumber)() {
         if ($('#cbUseDownloadURL@(randomNumber)').is(':checked')) {
+            $('#formUseExternalStorage@(randomNumber)').hide();
             $('#pnlDownloadURL@(randomNumber)').show();
             $('#pnlDownloadFile@(randomNumber)').hide();
         } else {
+            $('#formUseExternalStorage@(randomNumber)').show();
             $('#pnlDownloadURL@(randomNumber)').hide();
             $('#pnlDownloadFile@(randomNumber)').show();
+
+            if ($('#cbUseExternalStorage@(randomNumber)').is(':checked')) {
+                $('#labelExternalStorageUpload@(randomNumber)').show();
+                $('#labelNormalUpload@(randomNumber)').hide();
+            } else {
+                $('#labelExternalStorageUpload@(randomNumber)').hide();
+                $('#labelNormalUpload@(randomNumber)').show();
+            }
         }
     }
 
@@ -79,6 +91,18 @@
                 </div>
             </div>
         }
+        <div class="form-group" id="formUseExternalStorage@(randomNumber)">
+            <div class="col-md-3 col-sm-3">
+                @T("Admin.Download.UseExternalStorage"):
+            </div>
+            <div class="col-md-6 col-sm-6">
+                <label class="mt-checkbox mt-checkbox-outline control control-checkbox control control-checkbox">
+                    <input type="checkbox" name="cbUseExternalStorage@(randomNumber)" id="cbUseExternalStorage@(randomNumber)"
+                           @if (download == null || (download.UseDownloadUrl && download.UseExternalStorage)) { <text> checked="checked" </text> } />
+                    <div class="control__indicator"></div>
+                </label>
+            </div>
+        </div>
         <div class="form-group" id="pnlDownloadURL@(randomNumber)">
             <div class="col-md-3 col-sm-3">
                 @T("Admin.Download.DownloadURL"):
@@ -91,8 +115,11 @@
             </div>
         </div>
         <div class="form-group" id="pnlDownloadFile@(randomNumber)">
-            <div class="col-md-3 col-sm-3">
+            <div id="labelNormalUpload@(randomNumber)" class="col-md-3 col-sm-3">
                 @T("Admin.Download.UploadFile"):
+            </div>
+            <div id="labelExternalStorageUpload@(randomNumber)" class="col-md-3 col-sm-3">
+                @T("Admin.Download.UploadToExternalStorage"):
             </div>
             <div class="col-md-6 col-sm-6">
                 <div>
@@ -138,11 +165,13 @@
                     </script>
 
                     <script type="text/javascript">
-
                         $(document).ready(function () {
                             $("#@clientId").fineUploader({
-                                request: {
-                                    endpoint: '@(Url.Content("~/Admin/Download/AsyncUploadStream"))'
+                                callbacks: {
+                                    onUpload: function (id, name) {
+                                    var endpoint = $('#cbUseExternalStorage@(randomNumber)').is(':checked') ? '@(Url.Content("~/Admin/Download/AsyncUploadStream"))' : '@(Url.Content("~/Admin/Download/AsyncUpload"))';
+                                        this.setEndpoint(endpoint, id);
+                                    }
                                 },
                                 template: "@(clientId)-qq-template",
                                 multiple: false
