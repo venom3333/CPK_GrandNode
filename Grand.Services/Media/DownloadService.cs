@@ -122,6 +122,11 @@ namespace Grand.Services.Media
             if (download == null)
                 throw new ArgumentNullException("download");
 
+            if (download.UseExternalStorage && !string.IsNullOrWhiteSpace(download.DownloadUrl))
+            {
+                _ = await _yandexStorage.DeleteObjectAsync(download.DownloadUrl);
+            }
+
             await _downloadRepository.DeleteAsync(download);
 
             await _mediator.EntityDeleted(download);

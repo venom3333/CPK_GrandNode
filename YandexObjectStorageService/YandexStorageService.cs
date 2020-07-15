@@ -53,43 +53,54 @@ namespace YandexObjectStorageService
             _presignedUrlExpirationInHours = options.PresignedUrlExpirationInHours;
         }
 
+        private string[] AddStandardHeadersToRequest(HttpRequestMessage requestMessage, string dateTimeStamp, string hash)
+        {
+            requestMessage.Headers.Add("Host", _endpoint);
+            requestMessage.Headers.Add("X-Amz-Content-Sha256", hash);
+            requestMessage.Headers.Add("X-Amz-Date", $"{dateTimeStamp}");
+
+            string[] headers = { "host", "x-amz-content-sha256", "x-amz-date" };
+            return headers;
+        }
+
         private async Task<HttpRequestMessage> PrepareGetRequestAsync()
         {
 
             AwsV4SignatureCalculator calculator = new AwsV4SignatureCalculator(_secretKey, _service, _region);
             HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, new Uri($"{_protocol}://{_endpoint}/{_bucketName}"));
-            DateTime value = DateTime.UtcNow;
+
+            DateTime now = DateTime.UtcNow;
+            var dateTimeStamp = now.ToString(AwsV4SignatureCalculator.Iso8601DateTimeFormat, CultureInfo.InvariantCulture);
+            var dateStamp = now.ToString(AwsV4SignatureCalculator.Iso8601DateFormat, CultureInfo.InvariantCulture);
 
             var hash = await AwsV4SignatureCalculator.GetPayloadHashAsync(requestMessage);
 
-            requestMessage.Headers.Add("Host", _endpoint);
-            requestMessage.Headers.Add("X-Amz-Content-Sha256", hash);
-            requestMessage.Headers.Add("X-Amz-Date", $"{value:yyyyMMddTHHmmssZ}");
+            string[] headers = AddStandardHeadersToRequest(requestMessage, dateTimeStamp, hash);
 
-            string[] headers = { "host", "x-amz-content-sha256", "x-amz-date" };
-            string signature = await calculator.CalculateSignatureAsync(requestMessage, headers, value);
-            string authHeader = $"AWS4-HMAC-SHA256 Credential={_accessKey}/{value:yyyyMMdd}/us-east-1/s3/aws4_request, SignedHeaders={string.Join(";", headers)}, Signature={signature}";
+            string signature = await calculator.CalculateSignatureAsync(requestMessage, headers, now);
+            string authHeader = GetAuthHeader(dateStamp, headers, signature);
 
             requestMessage.Headers.TryAddWithoutValidation("Authorization", authHeader);
 
             return requestMessage;
         }
 
+       
         private async Task<HttpRequestMessage> PrepareGetRequestAsync(string filename)
         {
             AwsV4SignatureCalculator calculator = new AwsV4SignatureCalculator(_secretKey, _service, _region);
             HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, new Uri($"{_protocol}://{_endpoint}/{_bucketName}/{_supPath}/{filename}"));
-            DateTime value = DateTime.UtcNow;
+
+            DateTime now = DateTime.UtcNow;
+            var dateTimeStamp = now.ToString(AwsV4SignatureCalculator.Iso8601DateTimeFormat, CultureInfo.InvariantCulture);
+            var dateStamp = now.ToString(AwsV4SignatureCalculator.Iso8601DateFormat, CultureInfo.InvariantCulture);
 
             var hash = await AwsV4SignatureCalculator.GetPayloadHashAsync(requestMessage);
 
-            requestMessage.Headers.Add("Host", _endpoint);
-            requestMessage.Headers.Add("X-Amz-Content-Sha256", hash);
-            requestMessage.Headers.Add("X-Amz-Date", $"{value:yyyyMMddTHHmmssZ}");
+            string[] headers = AddStandardHeadersToRequest(requestMessage, dateTimeStamp, hash);
 
-            string[] headers = { "host", "x-amz-content-sha256", "x-amz-date" };
-            string signature = await calculator.CalculateSignatureAsync(requestMessage, headers, value);
-            string authHeader = $"AWS4-HMAC-SHA256 Credential={_accessKey}/{value:yyyyMMdd}/us-east-1/s3/aws4_request, SignedHeaders={string.Join(";", headers)}, Signature={signature}";
+            string signature = await calculator.CalculateSignatureAsync(requestMessage, headers, now);
+            string authHeader = GetAuthHeader(dateStamp, headers, signature);
 
             requestMessage.Headers.TryAddWithoutValidation("Authorization", authHeader);
 
@@ -100,20 +111,21 @@ namespace YandexObjectStorageService
         {
             AwsV4SignatureCalculator calculator = new AwsV4SignatureCalculator(_secretKey, _service, _region);
             HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Put, new Uri($"{_protocol}://{_endpoint}/{_bucketName}/{_supPath}/{filename}"));
-            DateTime value = DateTime.UtcNow;
+
+            DateTime now = DateTime.UtcNow;
+            var dateTimeStamp = now.ToString(AwsV4SignatureCalculator.Iso8601DateTimeFormat, CultureInfo.InvariantCulture);
+            var dateStamp = now.ToString(AwsV4SignatureCalculator.Iso8601DateFormat, CultureInfo.InvariantCulture);
+
             StreamContent content = new StreamContent(stream);
 
             requestMessage.Content = content;
 
             var hash = await AwsV4SignatureCalculator.GetPayloadHashAsync(requestMessage);
 
-            requestMessage.Headers.Add("Host", _endpoint);
-            requestMessage.Headers.Add("X-Amz-Content-Sha256", hash);
-            requestMessage.Headers.Add("X-Amz-Date", $"{value:yyyyMMddTHHmmssZ}");
+            string[] headers = AddStandardHeadersToRequest(requestMessage, dateTimeStamp, hash);
 
-            string[] headers = { "host", "x-amz-content-sha256", "x-amz-date" };
-            string signature = await calculator.CalculateSignatureAsync(requestMessage, headers, value);
-            string authHeader = $"AWS4-HMAC-SHA256 Credential={_accessKey}/{value:yyyyMMdd}/us-east-1/s3/aws4_request, SignedHeaders={string.Join(";", headers)}, Signature={signature}";
+            string signature = await calculator.CalculateSignatureAsync(requestMessage, headers, now);
+            string authHeader = GetAuthHeader(dateStamp, headers, signature);
 
             requestMessage.Headers.TryAddWithoutValidation("Authorization", authHeader);
 
@@ -124,20 +136,21 @@ namespace YandexObjectStorageService
         {
             AwsV4SignatureCalculator calculator = new AwsV4SignatureCalculator(_secretKey, _service, _region);
             HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Put, new Uri($"{_protocol}://{_endpoint}/{_bucketName}/{_supPath}/{filename}"));
-            DateTime value = DateTime.UtcNow;
+
+            DateTime now = DateTime.UtcNow;
+            var dateTimeStamp = now.ToString(AwsV4SignatureCalculator.Iso8601DateTimeFormat, CultureInfo.InvariantCulture);
+            var dateStamp = now.ToString(AwsV4SignatureCalculator.Iso8601DateFormat, CultureInfo.InvariantCulture);
+
             ByteArrayContent content = new ByteArrayContent(byteArr);
 
             requestMessage.Content = content;
 
             var hash = await AwsV4SignatureCalculator.GetPayloadHashAsync(requestMessage);
 
-            requestMessage.Headers.Add("Host", _endpoint);
-            requestMessage.Headers.Add("X-Amz-Content-Sha256", hash);
-            requestMessage.Headers.Add("X-Amz-Date", $"{value:yyyyMMddTHHmmssZ}");
+            string[] headers = AddStandardHeadersToRequest(requestMessage, dateTimeStamp, hash);
 
-            string[] headers = { "host", "x-amz-content-sha256", "x-amz-date" };
-            string signature = await calculator.CalculateSignatureAsync(requestMessage, headers, value);
-            string authHeader = $"AWS4-HMAC-SHA256 Credential={_accessKey}/{value:yyyyMMdd}/us-east-1/s3/aws4_request, SignedHeaders={string.Join(";", headers)}, Signature={signature}";
+            string signature = await calculator.CalculateSignatureAsync(requestMessage, headers, now);
+            string authHeader = GetAuthHeader(dateStamp, headers, signature);
 
             requestMessage.Headers.TryAddWithoutValidation("Authorization", authHeader);
 
@@ -148,21 +161,26 @@ namespace YandexObjectStorageService
         {
             AwsV4SignatureCalculator calculator = new AwsV4SignatureCalculator(_secretKey, _service, _region);
             HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Delete, new Uri($"{_protocol}://{_endpoint}/{_bucketName}/{_supPath}/{filename}"));
-            DateTime value = DateTime.UtcNow;
+
+            DateTime now = DateTime.UtcNow;
+            var dateTimeStamp = now.ToString(AwsV4SignatureCalculator.Iso8601DateTimeFormat, CultureInfo.InvariantCulture);
+            var dateStamp = now.ToString(AwsV4SignatureCalculator.Iso8601DateFormat, CultureInfo.InvariantCulture);
 
             var hash = await AwsV4SignatureCalculator.GetPayloadHashAsync(requestMessage);
 
-            requestMessage.Headers.Add("Host", _endpoint);
-            requestMessage.Headers.Add("X-Amz-Content-Sha256", hash);
-            requestMessage.Headers.Add("X-Amz-Date", $"{value:yyyyMMddTHHmmssZ}");
+            string[] headers = AddStandardHeadersToRequest(requestMessage, dateTimeStamp, hash);
 
-            string[] headers = { "host", "x-amz-content-sha256", "x-amz-date" };
-            string signature = await calculator.CalculateSignatureAsync(requestMessage, headers, value);
-            string authHeader = $"AWS4-HMAC-SHA256 Credential={_accessKey}/{value:yyyyMMdd}/us-east-1/s3/aws4_request, SignedHeaders={string.Join(";", headers)}, Signature={signature}";
+            string signature = await calculator.CalculateSignatureAsync(requestMessage, headers, now);
+            string authHeader = GetAuthHeader(dateStamp, headers, signature);
 
             requestMessage.Headers.TryAddWithoutValidation("Authorization", authHeader);
 
             return requestMessage;
+        }
+
+        private string GetAuthHeader(string dateStamp, string[] headers, string signature)
+        {
+            return $"AWS4-HMAC-SHA256 Credential={_accessKey}/{dateStamp}/{_region}/{_service}/aws4_request, SignedHeaders={string.Join(";", headers)}, Signature={signature}";
         }
 
 
@@ -298,7 +316,7 @@ namespace YandexObjectStorageService
         /// <returns>Direct link to an object</returns>
         public async Task<string> PutObjectAsync(Stream stream, string filename)
         {
-            var formatedPath = FormatePath(filename);
+            var formatedPath = FormatePath(filename, true);
 
             var requestMessage = await PreparePutRequestAsync(stream, formatedPath);
 
@@ -325,7 +343,7 @@ namespace YandexObjectStorageService
         /// <returns>Direct link to an object</returns>
         public async Task<string> PutObjectAsync(byte[] byteArr, string filename)
         {
-            var formatedPath = FormatePath(filename);
+            var formatedPath = FormatePath(filename, true);
 
             var requestMessage = await PreparePutRequestAsync(byteArr, formatedPath);
 
@@ -345,9 +363,10 @@ namespace YandexObjectStorageService
         }
 
 
-        private string FormatePath(string path)
+        private string FormatePath(string path, bool isPut = false)
         {
-            return path.RemoveProtocol(_protocol).RemoveEndPoint(_endpoint).RemoveBucket(_bucketName).RemoveSubPath(_supPath);
+            path = path.RemoveProtocol(_protocol).RemoveEndPoint(_endpoint).RemoveBucket(_bucketName).RemoveSubPath(_supPath);
+            return isPut ? path.RemoveSpecialChars() : path;
         }
 
         /// <summary>

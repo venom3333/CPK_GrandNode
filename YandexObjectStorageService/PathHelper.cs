@@ -5,6 +5,11 @@ namespace YandexObjectStorageService
 {
     public static class PathHelper
     {
+        public static string RemoveSpecialChars(this string path)
+        {
+            return Regex.Replace(path, "[^а-яА-Яa-zA-Z0-9/.-]", "_");
+        }
+
         public static string RemoveProtocol(this string path, string protocol)
         {
             return path.Replace($"{protocol}://", "");
