@@ -21,6 +21,7 @@ namespace YandexObjectStorageService
         private readonly string _hostName;
         private readonly string _service;
         private readonly string _supPath;
+        private readonly int _presignedUrlExpirationInHours;
 
         public YandexStorageService(IOptions<YandexStorageOptions> options)
         {
@@ -35,6 +36,7 @@ namespace YandexObjectStorageService
             _hostName = yandexStorageOptions.HostName;
             _service = yandexStorageOptions.Service;
             _supPath = yandexStorageOptions.SubPath;
+            _presignedUrlExpirationInHours = yandexStorageOptions.PresignedUrlExpirationInHours;
         }
 
         public YandexStorageService(YandexStorageOptions options)
@@ -48,6 +50,7 @@ namespace YandexObjectStorageService
             _hostName = options.HostName;
             _service = options.Service;
             _supPath = options.SubPath;
+            _presignedUrlExpirationInHours = options.PresignedUrlExpirationInHours;
         }
 
         private async Task<HttpRequestMessage> PrepareGetRequestAsync()
@@ -190,11 +193,11 @@ namespace YandexObjectStorageService
         /// </summary>
         /// <param name="v"></param>
         /// <returns></returns>
-        public string GetPresignedUrlAsync(string filename, TimeSpan expirationTime = default)
+        public string GetPresignedUrl(string filename, TimeSpan expirationTime = default)
         {
             if (expirationTime == default)
             {
-                expirationTime = TimeSpan.FromHours(1);
+                expirationTime = TimeSpan.FromHours(_presignedUrlExpirationInHours);
             }
 
             var formatedPath = FormatePath(filename);

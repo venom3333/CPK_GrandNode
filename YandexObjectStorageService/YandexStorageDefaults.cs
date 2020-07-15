@@ -7,5 +7,6 @@ namespace YandexObjectStorageService
         public const string Endpoint = "storage.yandexcloud.net";
         public const string Service = "s3";
         public const string SupPath = "uploads";
+        public const int PresignedUrlExpirationInHours = 3;
     };
 }

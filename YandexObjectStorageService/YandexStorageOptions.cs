@@ -21,6 +21,10 @@ namespace YandexObjectStorageService
             Endpoint = section.GetSection("Endpoint")?.Value ?? YandexStorageDefaults.Endpoint;
             Service = section.GetSection("Service")?.Value ?? YandexStorageDefaults.Service;
             SubPath = section.GetSection("SupPath")?.Value ?? YandexStorageDefaults.SupPath;
+
+            int.TryParse(section.GetSection("SupPath")?.Value, out int expiration);
+            if (expiration == default) expiration = YandexStorageDefaults.PresignedUrlExpirationInHours;
+            PresignedUrlExpirationInHours = expiration;
         }
         
         /// <summary>
@@ -37,6 +41,7 @@ namespace YandexObjectStorageService
         public string Endpoint { get; set; } = YandexStorageDefaults.Endpoint;
         public string Service { get; set; } = YandexStorageDefaults.Service;
         public string SubPath { get; set; } = YandexStorageDefaults.SupPath;
+        public int PresignedUrlExpirationInHours { get; set; } = YandexStorageDefaults.PresignedUrlExpirationInHours;
         
         /// <summary>
         /// https://cloud.yandex.ru/docs/storage/s3/

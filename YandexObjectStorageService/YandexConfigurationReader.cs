@@ -27,6 +27,7 @@ namespace YandexObjectStorageService
                 options.Protocol = readedOptions.Protocol;
                 options.Service = readedOptions.Service;
                 options.SubPath = readedOptions.SubPath;
+                options.PresignedUrlExpirationInHours = readedOptions.PresignedUrlExpirationInHours;
             });
 
             return services;
