@@ -67,7 +67,6 @@ namespace Grand.Web.Areas.Admin.Controllers
         [HttpPost]
         //do not validate request token (XSRF)
         [IgnoreAntiforgeryToken]
-        [DisableRequestSizeLimit] // TODO: Обсудить какой лимит выставить, если нужно (или тут ограничение вернуть, а в новом экшене убрать)
         public virtual async Task<IActionResult> AsyncUpload()
         {
             var form = await HttpContext.Request.ReadFormAsync();
@@ -106,6 +105,63 @@ namespace Grand.Web.Areas.Admin.Controllers
                 ContentType = contentType,
                 //we store filename without extension for downloads
                 Filename = Path.GetFileNameWithoutExtension(fileName),
+                Extension = fileExtension,
+                IsNew = true
+            };
+            await _downloadService.InsertDownload(download);
+
+            //when returning JSON the mime-type must be set to text/plain
+            //otherwise some browsers will pop-up a "Save As" dialog.
+            return Json(new
+            {
+                success = true,
+                downloadId = download.Id,
+                downloadUrl = Url.Action("DownloadFile", new { downloadGuid = download.DownloadGuid })
+            });
+        }
+
+        [HttpPost]
+        //do not validate request token (XSRF)
+        [IgnoreAntiforgeryToken]
+        [DisableRequestSizeLimit] // TODO: Обсудить какой лимит выставить, если нужно (или тут ограничение вернуть, а в новом экшене убрать)
+        public virtual async Task<IActionResult> AsyncUploadStream()
+        {
+            var form = await HttpContext.Request.ReadFormAsync();
+            var httpPostedFile = form.Files.FirstOrDefault();
+            if (httpPostedFile == null)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "No file uploaded",
+                    downloadGuid = Guid.Empty,
+                });
+            }
+
+            using var fileStream = httpPostedFile.OpenReadStream();
+            var qqFileNameParameter = "qqfilename";
+            var fileName = httpPostedFile.FileName;
+            if (String.IsNullOrEmpty(fileName) && form.ContainsKey(qqFileNameParameter))
+                fileName = form[qqFileNameParameter].ToString();
+            //remove path (passed in IE)
+            fileName = Path.GetFileName(fileName);
+
+            var contentType = httpPostedFile.ContentType;
+
+            var fileExtension = Path.GetExtension(fileName);
+            if (!String.IsNullOrEmpty(fileExtension))
+                fileExtension = fileExtension.ToLowerInvariant();
+
+
+            var download = new Download {
+                DownloadGuid = Guid.NewGuid(),
+                UseDownloadUrl = false,
+                UseExternalStorage = true,
+                DownloadUrl = "",
+                DownloadBinary = null,
+                DownloadStream = fileStream,
+                ContentType = contentType,
+                Filename = fileName,
                 Extension = fileExtension,
                 IsNew = true
             };

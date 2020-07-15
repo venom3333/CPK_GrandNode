@@ -1,5 +1,6 @@
 using MongoDB.Bson;
 using System;
+using System.IO;
 
 namespace Grand.Core.Domain.Media
 {
@@ -19,6 +20,11 @@ namespace Grand.Core.Domain.Media
         public bool UseDownloadUrl { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether ExternalStorage should be used
+        /// </summary>
+        public bool UseExternalStorage { get; set; }
+
+        /// <summary>
         /// Gets or sets a download URL
         /// </summary>
         public string DownloadUrl { get; set; }
@@ -27,6 +33,11 @@ namespace Grand.Core.Domain.Media
         /// Gets or sets the download binary
         /// </summary>
         public byte[] DownloadBinary { get; set; }
+
+        /// <summary>
+        /// Gets or sets the download stream
+        /// </summary>
+        public Stream DownloadStream { get; set; }
 
         /// <summary>
         /// Gets or sets the download binary

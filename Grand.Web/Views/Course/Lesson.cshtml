@@ -67,7 +67,7 @@
     @if (Model.VideoFile)
     {
         <div>
-            <video controls controlsList="nodownload">
+            <video width="100%" controls controlsList="nodownload">
                 <source src="@Url.Action("VideoFile", "Course", new { id = Model.Id  })" type="video/mp4">
                 Your browser does not support the video tag.
             </video>

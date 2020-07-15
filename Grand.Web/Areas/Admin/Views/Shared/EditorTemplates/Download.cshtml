@@ -73,7 +73,7 @@
                 <div class="col-md-6 col-sm-6">
                     <label class="mt-checkbox mt-checkbox-outline control control-checkbox control control-checkbox">
                         <input type="checkbox" name="cbUseDownloadURL@(randomNumber)" id="cbUseDownloadURL@(randomNumber)"
-                               @if (download != null && download.UseDownloadUrl) { <text> checked="checked" </text> } />
+                               @if (download != null && download.UseDownloadUrl && !download.UseExternalStorage) { <text> checked="checked" </text> } />
                         <div class="control__indicator"></div>
                     </label>
                 </div>
@@ -142,7 +142,7 @@
                         $(document).ready(function () {
                             $("#@clientId").fineUploader({
                                 request: {
-                                    endpoint: '@(Url.Content("~/Admin/Download/AsyncUpload"))'
+                                    endpoint: '@(Url.Content("~/Admin/Download/AsyncUploadStream"))'
                                 },
                                 template: "@(clientId)-qq-template",
                                 multiple: false

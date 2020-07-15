@@ -4,11 +4,15 @@ using Grand.Core.Domain.Media;
 using Grand.Core.Domain.Orders;
 using Grand.Core.Domain.Payments;
 using Grand.Services.Events;
+
 using MediatR;
+
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
+
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -23,7 +27,7 @@ namespace Grand.Services.Media
     {
         #region Fields
 
-        private readonly IYandexStorageService yandexStorage;
+        private readonly IYandexStorageService _yandexStorage;
         private readonly IRepository<Download> _downloadRepository;
         private readonly IMediator _mediator;
 
@@ -37,10 +41,13 @@ namespace Grand.Services.Media
         /// <param name="downloadRepository">Download repository</param>
         /// <param name="mediator">Mediator</param>
         public DownloadService(IRepository<Download> downloadRepository,
-            IMediator mediator)
+            IMediator mediator,
+            IYandexStorageService yandexStorage
+            )
         {
             _downloadRepository = downloadRepository;
             _mediator = mediator;
+            _yandexStorage = yandexStorage;
         }
 
         #endregion
@@ -58,8 +65,16 @@ namespace Grand.Services.Media
                 return null;
 
             var _download = await _downloadRepository.GetByIdAsync(downloadId);
-            if (!_download.UseDownloadUrl)
-                _download.DownloadBinary = await DownloadAsBytes(_download.DownloadObjectId);
+            if (_download.UseDownloadUrl)
+            {
+                if (_download.UseExternalStorage)
+                {
+                    var presignedUrl = _yandexStorage.GetPresignedUrlAsync(_download.DownloadUrl, TimeSpan.FromHours(3));
+                    _download.DownloadUrl = presignedUrl;
+                }
+                return _download;
+            }
+            _download.DownloadBinary = await DownloadAsBytes(_download.DownloadObjectId);
 
             return _download;
         }
@@ -84,8 +99,16 @@ namespace Grand.Services.Media
                         where o.DownloadGuid == downloadGuid
                         select o;
             var order = await query.FirstOrDefaultAsync();
-            if (!order.UseDownloadUrl)
-                order.DownloadBinary = await DownloadAsBytes(order.DownloadObjectId);
+            if (order.UseDownloadUrl)
+            {
+                if (order.UseExternalStorage)
+                {
+                    var presignedUrl = _yandexStorage.GetPresignedUrlAsync(order.DownloadUrl, TimeSpan.FromHours(3));
+                    order.DownloadUrl = presignedUrl;
+                }
+                return order;
+            }
+            order.DownloadBinary = await DownloadAsBytes(order.DownloadObjectId);
 
             return order;
         }
@@ -112,7 +135,20 @@ namespace Grand.Services.Media
         {
             if (download == null)
                 throw new ArgumentNullException("download");
-            if (!download.UseDownloadUrl)
+            if (download.UseDownloadUrl)
+            {
+            }
+            else if (download.UseExternalStorage)
+            {
+                var name = Path.GetFileNameWithoutExtension(download.Filename);
+                var extension = Path.GetExtension(download.Filename);
+                var guid = Guid.NewGuid();
+                var filename = $"{name}_{guid}{extension}";
+                var fileNameInStorage = await _yandexStorage.PutObjectAsync(download.DownloadStream, filename);
+                download.UseDownloadUrl = true;
+                download.DownloadUrl = fileNameInStorage;
+            }
+            else
             {
                 var bucket = new MongoDB.Driver.GridFS.GridFSBucket(_downloadRepository.Database);
                 var id = await bucket.UploadFromBytesAsync(download.Filename, download.DownloadBinary);
@@ -120,6 +156,7 @@ namespace Grand.Services.Media
             }
 
             download.DownloadBinary = null;
+            download.DownloadStream = null;
             await _downloadRepository.InsertAsync(download);
 
             await _mediator.EntityInserted(download);
