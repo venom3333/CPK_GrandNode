@@ -124,6 +124,7 @@ namespace Grand.Web.Areas.Admin.Controllers
         //do not validate request token (XSRF)
         [IgnoreAntiforgeryToken]
         [DisableRequestSizeLimit] // TODO: Обсудить какой лимит выставить, если нужно
+        [RequestFormLimits(MultipartBodyLengthLimit = 2147483648)]
         public virtual async Task<IActionResult> AsyncUploadStream()
         {
             var form = await HttpContext.Request.ReadFormAsync();
