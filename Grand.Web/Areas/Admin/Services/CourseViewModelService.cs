@@ -34,6 +34,7 @@ namespace Grand.Web.Areas.Admin.Services
         private readonly ICourseSubjectService _courseSubjectService;
         private readonly IUrlRecordService _urlRecordService;
         private readonly IPictureService _pictureService;
+        private readonly IDownloadService _downloadService;
         private readonly ILanguageService _languageService;
         private readonly ILocalizationService _localizationService;
         private readonly ICustomerActivityService _customerActivityService;
@@ -43,7 +44,7 @@ namespace Grand.Web.Areas.Admin.Services
 
         public CourseViewModelService(ICourseService courseService, ICourseLevelService courseLevelService, ICourseLessonService courseLessonService,
             ICourseSubjectService courseSubjectService,
-            IUrlRecordService urlRecordService, IPictureService pictureService, ILanguageService languageService,
+            IUrlRecordService urlRecordService, IPictureService pictureService, IDownloadService downloadService, ILanguageService languageService,
             ILocalizationService localizationService, ICustomerActivityService customerActivityService, IProductCourseService productCourseService,
             IServiceProvider serviceProvider,
             SeoSettings seoSettings)
@@ -54,6 +55,7 @@ namespace Grand.Web.Areas.Admin.Services
             _courseSubjectService = courseSubjectService;
             _urlRecordService = urlRecordService;
             _pictureService = pictureService;
+            _downloadService = downloadService;
             _languageService = languageService;
             _localizationService = localizationService;
             _customerActivityService = customerActivityService;
@@ -191,6 +193,9 @@ namespace Grand.Web.Areas.Admin.Services
         public virtual async Task<CourseLesson> UpdateCourseLessonModel(CourseLesson lesson, CourseLessonModel model)
         {
             string prevPictureId = lesson.PictureId;
+            string prevVideoId = lesson.VideoFile;
+            string prevattachmentId = lesson.AttachmentId;
+
             lesson = model.ToEntity(lesson);
             await _courseLessonService.Update(lesson);
 
@@ -200,6 +205,22 @@ namespace Grand.Web.Areas.Admin.Services
                 var prevPicture = await _pictureService.GetPictureById(prevPictureId);
                 if (prevPicture != null)
                     await _pictureService.DeletePicture(prevPicture);
+            }
+
+            // delete old video
+            if (!string.IsNullOrEmpty(prevVideoId) && prevVideoId != lesson.VideoFile)
+            {
+                var prevVideo = await _downloadService.GetDownloadById(prevVideoId);
+                if (prevVideo != null)
+                    await _downloadService.DeleteDownload(prevVideo);
+            }
+
+            // delete attachment
+            if (!string.IsNullOrEmpty(prevattachmentId) && prevattachmentId != lesson.AttachmentId)
+            {
+                var prevAttachment = await _downloadService.GetDownloadById(prevattachmentId);
+                if (prevAttachment != null)
+                    await _downloadService.DeleteDownload(prevAttachment);
             }
 
             //activity log

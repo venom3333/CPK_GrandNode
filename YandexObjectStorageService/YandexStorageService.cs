@@ -250,9 +250,13 @@ namespace YandexObjectStorageService
             AwsV4SignatureCalculator calculator = new AwsV4SignatureCalculator(_secretKey, _service, _region);
             string signature = calculator.CalculateSignatureAsync(requestMessage, headers, requestDateTime, true).Result;
 
-            var urlBuilder = new StringBuilder(endpointUri.ToString());
-            urlBuilder.AppendFormat("&{0}={1}", AwsV4SignatureCalculator.X_Amz_Signature, UrlHelper.UrlEncode(signature));
-            var presignedUrl = urlBuilder.ToString();
+            // remove unnecessary port
+            endpointUri.Port = -1;
+
+            var urlStringBuilder = new StringBuilder(endpointUri.ToString());
+            urlStringBuilder.AppendFormat("&{0}={1}", AwsV4SignatureCalculator.X_Amz_Signature, UrlHelper.UrlEncode(signature));
+            
+            var presignedUrl = urlStringBuilder.ToString();
 
             return presignedUrl;
         }
@@ -365,7 +369,12 @@ namespace YandexObjectStorageService
 
         private string FormatePath(string path, bool isPut = false)
         {
-            path = path.RemoveProtocol(_protocol).RemoveEndPoint(_endpoint).RemoveBucket(_bucketName).RemoveSubPath(_supPath);
+            path = path
+                .RemoveQueryString()
+                .RemoveProtocol(_protocol)
+                .RemoveEndPoint(_endpoint)
+                .RemoveBucket(_bucketName)
+                .RemoveSubPath(_supPath);
             return isPut ? path.RemoveSpecialChars() : path;
         }
 

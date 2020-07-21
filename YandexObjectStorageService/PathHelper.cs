@@ -15,6 +15,12 @@ namespace YandexObjectStorageService
             return path.Replace($"{protocol}://", "");
         }
 
+        public static string RemoveQueryString(this string path)
+        {
+            var result = Regex.Replace(path, "([?]+).*", "");
+            return result;
+        }
+
         public static string RemoveEndPoint(this string path, string endpoint)
         {
             return path.Replace($"{endpoint}/", "");
