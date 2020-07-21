@@ -17,6 +17,7 @@ spec:
       containers:
       - name: cpk-dev
         image: cr.yandex/crpk2u577n064r3ocq4b/cpk:development
+        imagePullPolicy: Always
         env:
         - name: ASPNETCORE_ENVIRONMENT
           value: "Development"
