@@ -194,7 +194,7 @@ namespace Grand.Web.Areas.Admin.Services
         {
             string prevPictureId = lesson.PictureId;
             string prevVideoId = lesson.VideoFile;
-            string prevattachmentId = lesson.AttachmentId;
+            string prevAttachmentId = lesson.AttachmentId;
 
             lesson = model.ToEntity(lesson);
             await _courseLessonService.Update(lesson);
@@ -216,9 +216,9 @@ namespace Grand.Web.Areas.Admin.Services
             }
 
             // delete attachment
-            if (!string.IsNullOrEmpty(prevattachmentId) && prevattachmentId != lesson.AttachmentId)
+            if (!string.IsNullOrEmpty(prevAttachmentId) && prevAttachmentId != lesson.AttachmentId)
             {
-                var prevAttachment = await _downloadService.GetDownloadById(prevattachmentId);
+                var prevAttachment = await _downloadService.GetDownloadById(prevAttachmentId);
                 if (prevAttachment != null)
                     await _downloadService.DeleteDownload(prevAttachment);
             }
@@ -230,7 +230,26 @@ namespace Grand.Web.Areas.Admin.Services
         }
         public virtual async Task DeleteCourseLesson(CourseLesson lesson)
         {
+            string videoId = lesson.VideoFile;
+            string attachmentId = lesson.AttachmentId;
             await _courseLessonService.Delete(lesson);
+
+            // delete old video
+            if (!string.IsNullOrEmpty(videoId))
+            {
+                var video = await _downloadService.GetDownloadById(videoId);
+                if (video != null)
+                    await _downloadService.DeleteDownload(video);
+            }
+
+            // delete attachment
+            if (!string.IsNullOrEmpty(attachmentId))
+            {
+                var attachment = await _downloadService.GetDownloadById(attachmentId);
+                if (attachment != null)
+                    await _downloadService.DeleteDownload(attachment);
+            }
+
             //activity log
             await _customerActivityService.InsertActivity("DeleteCourseLesson", lesson.Id, _localizationService.GetResource("ActivityLog.DeleteCourseLesson"), lesson.Name);
         }
