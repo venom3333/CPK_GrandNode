@@ -13,22 +13,23 @@ namespace Grand.Plugin.Payments.Payture.Models
         }
 
         public string ActiveStoreScopeConfiguration { get; set; }
-        
+
+        // New code
+        [GrandResourceDisplayName("Plugins.Payment.Payture.Host")]
+        public string Host { get; set; }
+        public bool Host_OverrideForStore { get; set; }
+
+        [GrandResourceDisplayName("Plugins.Payment.Payture.MerchantId")]
+        public string MerchantId { get; set; }
+        public bool MerchantId_OverrideForStore { get; set; }
+
+        [GrandResourceDisplayName("Plugins.Payment.Payture.Password")]
+        public string Password { get; set; }
+        public bool Password_OverrideForStore { get; set; }
+
         [GrandResourceDisplayName("Plugins.Payment.Payture.DescriptionText")]
         public string DescriptionText { get; set; }
         public bool DescriptionText_OverrideForStore { get; set; }
-
-        [GrandResourceDisplayName("Plugins.Payment.Payture.AdditionalFee")]
-        public decimal AdditionalFee { get; set; }
-        public bool AdditionalFee_OverrideForStore { get; set; }
-
-        [GrandResourceDisplayName("Plugins.Payment.Payture.AdditionalFeePercentage")]
-        public bool AdditionalFeePercentage { get; set; }
-        public bool AdditionalFeePercentage_OverrideForStore { get; set; }
-
-        [GrandResourceDisplayName("Plugins.Payment.Payture.ShippableProductRequired")]
-        public bool ShippableProductRequired { get; set; }
-        public bool ShippableProductRequired_OverrideForStore { get; set; }
 
         public IList<ConfigurationLocalizedModel> Locales { get; set; }
 

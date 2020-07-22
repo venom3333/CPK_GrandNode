@@ -45,6 +45,10 @@ namespace Grand.Plugin.Payments.Payture
 
         #endregion
 
+        #region Utilites
+
+        #endregion
+
         #region Methods
 
         /// <summary>
@@ -88,8 +92,8 @@ namespace Grand.Plugin.Payments.Payture
             //for example, hide this payment method if all products in the cart are downloadable
             //or hide this payment method if current customer is from certain country
 
-            if (_payturePaymentSettings.ShippableProductRequired && !cart.RequiresShipping())
-                return true;
+            //if (_payturePaymentSettings.ShippableProductRequired && !cart.RequiresShipping())
+            //    return true;
 
             return await Task.FromResult(false);
         }
@@ -102,7 +106,7 @@ namespace Grand.Plugin.Payments.Payture
         public async Task<decimal> GetAdditionalHandlingFee(IList<ShoppingCartItem> cart)
         {
             var result = await this.CalculateAdditionalFee(_orderTotalCalculationService, cart,
-                _payturePaymentSettings.AdditionalFee, _payturePaymentSettings.AdditionalFeePercentage);
+                0, false);
             return result;
         }
 
@@ -191,12 +195,14 @@ namespace Grand.Plugin.Payments.Payture
             await this.AddOrUpdatePluginLocaleResource(_localizationService, _languageService, "Plugins.Payment.Payture.DescriptionText", "Description");
             await this.AddOrUpdatePluginLocaleResource(_localizationService, _languageService, "Plugins.Payment.Payture.DescriptionText.Hint", "Enter info that will be shown to customers during checkout");
             await this.AddOrUpdatePluginLocaleResource(_localizationService, _languageService, "Plugins.Payment.Payture.PaymentMethodDescription", "Платежный сервис Payture");
-            await this.AddOrUpdatePluginLocaleResource(_localizationService, _languageService, "Plugins.Payment.Payture.AdditionalFee", "Additional fee");
-            await this.AddOrUpdatePluginLocaleResource(_localizationService, _languageService, "Plugins.Payment.Payture.AdditionalFee.Hint", "The additional fee.");
-            await this.AddOrUpdatePluginLocaleResource(_localizationService, _languageService, "Plugins.Payment.Payture.AdditionalFeePercentage", "Additional fee. Use percentage");
-            await this.AddOrUpdatePluginLocaleResource(_localizationService, _languageService, "Plugins.Payment.Payture.AdditionalFeePercentage.Hint", "Determines whether to apply a percentage additional fee to the order total. If not enabled, a fixed value is used.");
-            await this.AddOrUpdatePluginLocaleResource(_localizationService, _languageService, "Plugins.Payment.Payture.ShippableProductRequired", "Shippable product required");
-            await this.AddOrUpdatePluginLocaleResource(_localizationService, _languageService, "Plugins.Payment.Payture.ShippableProductRequired.Hint", "An option indicating whether shippable products are required in order to display this payment method during checkout.");
+
+            // New code
+            await this.AddOrUpdatePluginLocaleResource(_localizationService, _languageService, "Plugins.Payment.Payture.Host", "Host");
+            await this.AddOrUpdatePluginLocaleResource(_localizationService, _languageService, "Plugins.Payment.Payture.Host.Hint", "Адрес хоста Payture, например https://sandbox.payture.com.");
+            await this.AddOrUpdatePluginLocaleResource(_localizationService, _languageService, "Plugins.Payment.Payture.MerchantId", "Аккаунт");
+            await this.AddOrUpdatePluginLocaleResource(_localizationService, _languageService, "Plugins.Payment.Payture.MerchantId.Hint", "Ваше имя аккаунта, выданное Payture.");
+            await this.AddOrUpdatePluginLocaleResource(_localizationService, _languageService, "Plugins.Payment.Payture.Password", "Пароль");
+            await this.AddOrUpdatePluginLocaleResource(_localizationService, _languageService, "Plugins.Payment.Payture.Password.Hint", "Ваш пароль, выданный Payture.");
 
 
             await base.Install();
@@ -211,12 +217,13 @@ namespace Grand.Plugin.Payments.Payture
             await this.DeletePluginLocaleResource(_localizationService, _languageService, "Plugins.Payment.Payture.DescriptionText");
             await this.DeletePluginLocaleResource(_localizationService, _languageService, "Plugins.Payment.Payture.DescriptionText.Hint");
             await this.DeletePluginLocaleResource(_localizationService, _languageService, "Plugins.Payment.Payture.PaymentMethodDescription");
-            await this.DeletePluginLocaleResource(_localizationService, _languageService, "Plugins.Payment.Payture.AdditionalFee");
-            await this.DeletePluginLocaleResource(_localizationService, _languageService, "Plugins.Payment.Payture.AdditionalFee.Hint");
-            await this.DeletePluginLocaleResource(_localizationService, _languageService, "Plugins.Payment.Payture.AdditionalFeePercentage");
-            await this.DeletePluginLocaleResource(_localizationService, _languageService, "Plugins.Payment.Payture.AdditionalFeePercentage.Hint");
-            await this.DeletePluginLocaleResource(_localizationService, _languageService, "Plugins.Payment.Payture.ShippableProductRequired");
-            await this.DeletePluginLocaleResource(_localizationService, _languageService, "Plugins.Payment.Payture.ShippableProductRequired.Hint");
+            
+            await this.DeletePluginLocaleResource(_localizationService, _languageService, "Plugins.Payment.Payture.Host");
+            await this.DeletePluginLocaleResource(_localizationService, _languageService, "Plugins.Payment.Payture.Host.Hint");
+            await this.DeletePluginLocaleResource(_localizationService, _languageService, "Plugins.Payment.Payture.MerchantId");
+            await this.DeletePluginLocaleResource(_localizationService, _languageService, "Plugins.Payment.Payture.MerchantId.Hint");
+            await this.DeletePluginLocaleResource(_localizationService, _languageService, "Plugins.Payment.Payture.Password");
+            await this.DeletePluginLocaleResource(_localizationService, _languageService, "Plugins.Payment.Payture.Password.Hint");
 
             await base.Uninstall();
         }

@@ -45,32 +45,32 @@
         <div class="form-body">
             <div class="form-group">
                 <div class="col-md-3 col-sm-3 text-right">
-                    @Html.OverrideStoreCheckboxFor(model => model.AdditionalFee_OverrideForStore, model => model.AdditionalFee, Model.ActiveStoreScopeConfiguration)
-                    <admin-label asp-for="AdditionalFee" class="control-label" />
+                    @Html.OverrideStoreCheckboxFor(model => model.Host_OverrideForStore, model => model.Host, Model.ActiveStoreScopeConfiguration)
+                    <admin-label asp-for="Host" class="control-label" />
                 </div>
                 <div class="col-md-9 col-sm-9">
-                    <admin-input asp-for="AdditionalFee" />
-                    <span asp-validation-for="AdditionalFee"></span>
+                    <admin-input asp-for="Host" />
+                    <span asp-validation-for="Host"></span>
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-md-3 col-sm-3 text-right">
-                    @Html.OverrideStoreCheckboxFor(model => model.AdditionalFeePercentage_OverrideForStore, model => model.AdditionalFeePercentage, Model.ActiveStoreScopeConfiguration)
-                    <admin-label asp-for="AdditionalFeePercentage" class="control-label" />
+                    @Html.OverrideStoreCheckboxFor(model => model.MerchantId_OverrideForStore, model => model.MerchantId, Model.ActiveStoreScopeConfiguration)
+                    <admin-label asp-for="MerchantId" class="control-label" />
                 </div>
                 <div class="col-md-9 col-sm-9">
-                    <admin-input asp-for="AdditionalFeePercentage" />
-                    <span asp-validation-for="AdditionalFeePercentage"></span>
+                    <admin-input asp-for="MerchantId" />
+                    <span asp-validation-for="MerchantId"></span>
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-md-3 col-sm-3 text-right">
-                    @Html.OverrideStoreCheckboxFor(model => model.ShippableProductRequired_OverrideForStore, model => model.ShippableProductRequired, Model.ActiveStoreScopeConfiguration)
-                    <admin-label asp-for="ShippableProductRequired" class="control-label" />
+                    @Html.OverrideStoreCheckboxFor(model => model.Password_OverrideForStore, model => model.Password, Model.ActiveStoreScopeConfiguration)
+                    <admin-label asp-for="Password" class="control-label" />
                 </div>
                 <div class="col-md-9 col-sm-9">
-                    <admin-input asp-for="ShippableProductRequired" />
-                    <span asp-validation-for="ShippableProductRequired"></span>
+                    <admin-input asp-for="Password" />
+                    <span asp-validation-for="Password"></span>
                 </div>
             </div>
         </div>

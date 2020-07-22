@@ -76,6 +76,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedConfig", "SharedConfi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YandexObjectStorageService", "YandexObjectStorageService\YandexObjectStorageService.csproj", "{5549CC9E-99EC-4C60-9F1D-C89914C5A8FD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpPayture", "CSharpPayture\CSharpPayture.csproj", "{3590F3D6-D78B-4BE5-B48F-60DF2025272D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -204,6 +206,10 @@ Global
 		{5549CC9E-99EC-4C60-9F1D-C89914C5A8FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5549CC9E-99EC-4C60-9F1D-C89914C5A8FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5549CC9E-99EC-4C60-9F1D-C89914C5A8FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3590F3D6-D78B-4BE5-B48F-60DF2025272D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3590F3D6-D78B-4BE5-B48F-60DF2025272D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3590F3D6-D78B-4BE5-B48F-60DF2025272D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3590F3D6-D78B-4BE5-B48F-60DF2025272D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -238,6 +244,7 @@ Global
 		{67730C7C-3C48-4E95-82C7-77D1E38568AA} = {615BCD39-09A7-4924-AB80-AA4032D477D1}
 		{D9CF38E4-55F1-4808-90F2-3E67EF166A67} = {F2418F56-9620-4BA3-9078-D9732EC8DD48}
 		{5549CC9E-99EC-4C60-9F1D-C89914C5A8FD} = {F2418F56-9620-4BA3-9078-D9732EC8DD48}
+		{3590F3D6-D78B-4BE5-B48F-60DF2025272D} = {F2418F56-9620-4BA3-9078-D9732EC8DD48}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {65BA1180-F5CC-42E1-B689-71E14D588393}

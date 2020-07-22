@@ -51,17 +51,19 @@ namespace Grand.Plugin.Payments.Payture.Controllers
             {
                 locale.DescriptionText = payturePaymentSettings.GetLocalizedSetting(_settingService, x => x.DescriptionText, languageId, "", false, false);
             });
-            model.AdditionalFee = payturePaymentSettings.AdditionalFee;
-            model.AdditionalFeePercentage = payturePaymentSettings.AdditionalFeePercentage;
-            model.ShippableProductRequired = payturePaymentSettings.ShippableProductRequired;
+
+            model.Host = payturePaymentSettings.Host;
+            model.MerchantId = payturePaymentSettings.MerchantId;
+            model.Password = payturePaymentSettings.Password;
 
             model.ActiveStoreScopeConfiguration = storeScope;
             if (!String.IsNullOrEmpty(storeScope))
             {
                 model.DescriptionText_OverrideForStore = _settingService.SettingExists(payturePaymentSettings, x => x.DescriptionText, storeScope);
-                model.AdditionalFee_OverrideForStore = _settingService.SettingExists(payturePaymentSettings, x => x.AdditionalFee, storeScope);
-                model.AdditionalFeePercentage_OverrideForStore = _settingService.SettingExists(payturePaymentSettings, x => x.AdditionalFeePercentage, storeScope);
-                model.ShippableProductRequired_OverrideForStore = _settingService.SettingExists(payturePaymentSettings, x => x.ShippableProductRequired, storeScope);
+
+                model.Host_OverrideForStore = _settingService.SettingExists(payturePaymentSettings, x => x.Host, storeScope);
+                model.MerchantId_OverrideForStore = _settingService.SettingExists(payturePaymentSettings, x => x.MerchantId, storeScope);
+                model.Password_OverrideForStore = _settingService.SettingExists(payturePaymentSettings, x => x.Password, storeScope);
             }
 
             return View("~/Plugins/Payments.Payture/Views/PaymentPayture/Configure.cshtml", model);
@@ -79,9 +81,10 @@ namespace Grand.Plugin.Payments.Payture.Controllers
 
             //save settings
             payturePaymentSettings.DescriptionText = model.DescriptionText;
-            payturePaymentSettings.AdditionalFee = model.AdditionalFee;
-            payturePaymentSettings.AdditionalFeePercentage = model.AdditionalFeePercentage;
-            payturePaymentSettings.ShippableProductRequired = model.ShippableProductRequired;
+            
+            payturePaymentSettings.Host = model.Host;
+            payturePaymentSettings.MerchantId = model.MerchantId;
+            payturePaymentSettings.Password = model.Password;
 
             /* We do not clear cache after each setting update.
              * This behavior can increase performance because cached settings will not be cleared 
@@ -91,21 +94,22 @@ namespace Grand.Plugin.Payments.Payture.Controllers
             else if (!String.IsNullOrEmpty(storeScope))
                 await _settingService.DeleteSetting(payturePaymentSettings, x => x.DescriptionText, storeScope);
 
-            if (model.AdditionalFee_OverrideForStore || String.IsNullOrEmpty(storeScope))
-                await _settingService.SaveSetting(payturePaymentSettings, x => x.AdditionalFee, storeScope, false);
+            if(model.Host_OverrideForStore || String.IsNullOrEmpty(storeScope))
+                await _settingService.SaveSetting(payturePaymentSettings, x => x.Host, storeScope, false);
             else if (!String.IsNullOrEmpty(storeScope))
-                await _settingService.DeleteSetting(payturePaymentSettings, x => x.AdditionalFee, storeScope);
+                await _settingService.DeleteSetting(payturePaymentSettings, x => x.Host, storeScope);
 
-            if (model.AdditionalFeePercentage_OverrideForStore || String.IsNullOrEmpty(storeScope))
-                await _settingService.SaveSetting(payturePaymentSettings, x => x.AdditionalFeePercentage, storeScope, false);
+            if (model.MerchantId_OverrideForStore || String.IsNullOrEmpty(storeScope))
+                await _settingService.SaveSetting(payturePaymentSettings, x => x.MerchantId, storeScope, false);
             else if (!String.IsNullOrEmpty(storeScope))
-                await _settingService.DeleteSetting(payturePaymentSettings, x => x.AdditionalFeePercentage, storeScope);
+                await _settingService.DeleteSetting(payturePaymentSettings, x => x.MerchantId, storeScope);
 
-            if (model.ShippableProductRequired_OverrideForStore || String.IsNullOrEmpty(storeScope))
-                await _settingService.SaveSetting(payturePaymentSettings, x => x.ShippableProductRequired, storeScope, false);
+            if (model.Password_OverrideForStore || String.IsNullOrEmpty(storeScope))
+                await _settingService.SaveSetting(payturePaymentSettings, x => x.Password, storeScope, false);
             else if (!String.IsNullOrEmpty(storeScope))
-                await _settingService.DeleteSetting(payturePaymentSettings, x => x.ShippableProductRequired, storeScope);
+                await _settingService.DeleteSetting(payturePaymentSettings, x => x.Password, storeScope);
 
+            
             //now clear settings cache
             await _settingService.ClearCache();
 
