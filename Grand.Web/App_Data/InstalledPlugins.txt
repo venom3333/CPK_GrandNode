@@ -1,2 +1,3 @@
 Payments.CashOnDelivery
 Payments.Payture
+Payments.PayPalStandard
