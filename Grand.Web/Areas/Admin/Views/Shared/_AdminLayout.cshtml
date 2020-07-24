@@ -290,7 +290,7 @@
     @Html.GrandScripts(this.Url, ResourceLocation.Footer)
     <div class="page-footer">
         <div class="page-footer-inner">
-            <a href="https://grandnode.com/" target="_blank">2019 © Powered by GrandNode.</a>
+            <a href="@webHelper.GetStoreLocation()" target="_blank"> @DateTime.Now.Year Алроса. Центр подготовки кадров.</a>
         </div>
         <div class="scroll-to-top">
             <i class="icon-arrow-up"></i>
